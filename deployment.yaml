@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-site-deployment
+  labels:
+    app: static-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: static-site
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: static-site
+    spec:
+      containers:
+      - name: static-site
+        image: rhdev1/c270assignment:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-site-service
+spec:
+  type: NodePort
+  selector:
+    tier: front-end
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30006
+
